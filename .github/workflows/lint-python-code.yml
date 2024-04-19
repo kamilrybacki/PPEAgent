@@ -20,17 +20,17 @@ jobs:
         run: |
           flake8 \
             --config \
-              ${CI_PROJECT_DIR}/.flake8
+              ${{ github.workspace }}/.flake8
             .
       - name: Lint with pylint
         run: |
           pylint \
             --rcfile \
-              ${CI_PROJECT_DIR}/.pylintrc
+              ${{ github.workspace }}/.pylintrc
             .
       - name: Type check with mypy
         run: |
           mypy \
             --config-file \
-              ${CI_PROJECT_DIR}/mypy.ini
+              ${{ github.workspace }}/mypy.ini
             .
