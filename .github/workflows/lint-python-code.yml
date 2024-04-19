@@ -1,0 +1,36 @@
+name: Check Python code style and typing
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+      - name: Install dependencies
+        run: |
+          pip \
+            install \
+              -r requirements.txt \
+              -r tests/requirements.txt \
+              -r .github/workflows/assets/requirements.txt
+      - name: Lint with flake8
+        run: |
+          flake8 \
+            --config \
+              ${CI_PROJECT_DIR}/.flake8
+            .
+      - name: Lint with pylint
+        run: |
+          pylint \
+            --rcfile \
+              ${CI_PROJECT_DIR}/.pylintrc
+            .
+      - name: Type check with mypy
+        run: |
+          mypy \
+            --config-file \
+              ${CI_PROJECT_DIR}/mypy.ini
+            .
