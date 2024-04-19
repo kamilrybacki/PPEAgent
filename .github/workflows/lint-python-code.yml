@@ -20,18 +20,21 @@ jobs:
               -r .github/workflows/assets/requirements.txt
       - name: Lint with flake8
         run: |
+          echo $(find . -name ${FILES_TO_LINT})
           flake8 \
             --config \
               ${{ github.workspace }}/.flake8
             $(find . -name ${FILES_TO_LINT})
       - name: Lint with pylint
         run: |
+          echo $(find . -name ${FILES_TO_LINT})
           pylint \
             --rcfile \
               ${{ github.workspace }}/.pylintrc
             $(find . -name ${FILES_TO_LINT})
       - name: Type check with mypy
         run: |
+          echo $(find . -name ${FILES_TO_LINT})
           mypy \
             --config-file \
               ${{ github.workspace }}/mypy.ini
