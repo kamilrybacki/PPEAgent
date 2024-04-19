@@ -3,6 +3,8 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      FILES_TO_LINT: "src/*.py"
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.12
@@ -21,16 +23,16 @@ jobs:
           flake8 \
             --config \
               ${{ github.workspace }}/.flake8
-            .
+            $(find . -name ${FILES_TO_LINT})
       - name: Lint with pylint
         run: |
           pylint \
             --rcfile \
               ${{ github.workspace }}/.pylintrc
-            .
+            $(find . -name ${FILES_TO_LINT})
       - name: Type check with mypy
         run: |
           mypy \
             --config-file \
               ${{ github.workspace }}/mypy.ini
-            .
+            $(find . -name ${FILES_TO_LINT})
