@@ -4,7 +4,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      FILES_TO_LINT: "${{ github.workspace }}/src/*.py"
+      FIND_COMMAND: "find . -name '*.py' -not -path '*/.venv/*'"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.12
@@ -23,19 +23,19 @@ jobs:
           echo $(find . -name ${FILES_TO_LINT})
           flake8 \
             --config \
-              ${{ github.workspace }}/.flake8
-            $(find . -name ${FILES_TO_LINT})
+              ${{ github.workspace }}/.flake8 \
+            $(exec ${FIND_COMMAND})
       - name: Lint with pylint
         run: |
           echo $(find . -name ${FILES_TO_LINT})
           pylint \
             --rcfile \
-              ${{ github.workspace }}/.pylintrc
-            $(find . -name ${FILES_TO_LINT})
+              ${{ github.workspace }}/.pylintrc \
+            $(exec ${FIND_COMMAND})
       - name: Type check with mypy
         run: |
           echo $(find . -name ${FILES_TO_LINT})
           mypy \
             --config-file \
-              ${{ github.workspace }}/mypy.ini
-            $(find . -name ${FILES_TO_LINT})
+              ${{ github.workspace }}/mypy.ini \
+            $(exec ${FIND_COMMAND})
