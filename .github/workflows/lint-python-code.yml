@@ -4,7 +4,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      FILES_TO_LINT: "src/*.py"
+      FILES_TO_LINT: "${{ github.workspace }}/src/*.py"
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.12
