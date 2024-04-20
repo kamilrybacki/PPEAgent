@@ -1,5 +1,6 @@
-import uvicorn
 import os
+
+import uvicorn
 
 import agent.service
 import agent.utils.logger
