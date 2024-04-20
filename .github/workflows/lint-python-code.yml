@@ -3,8 +3,6 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
-    env:
-      FIND_COMMAND: "find . -name '*.py' -not -path '*/.venv/*'"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.12
@@ -18,21 +16,25 @@ jobs:
               -r requirements.txt \
               -r tests/requirements.txt \
               -r .github/workflows/assets/requirements.txt
+      - name: Find Python files
+        id: find
+        run: |
+          echo "::set-output name=files::$(find . -name '*.py' -not -path './.venv/*' -not -path './.github/*' -not -path './tests/*')"
       - name: Lint with flake8
         run: |
           flake8 \
             --config \
               ${{ github.workspace }}/.flake8 \
-            $(exec ${FIND_COMMAND})
+            ${{ steps.find.outputs.files }}
       - name: Lint with pylint
         run: |
           pylint \
             --rcfile \
               ${{ github.workspace }}/.pylintrc \
-            $(exec ${FIND_COMMAND})
+            ${{ steps.find.outputs.files }}
       - name: Type check with mypy
         run: |
           mypy \
             --config-file \
               ${{ github.workspace }}/mypy.ini \
-            $(exec ${FIND_COMMAND})
+            ${{ steps.find.outputs.files }}
