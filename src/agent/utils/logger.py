@@ -1,31 +1,19 @@
-import enum
 import logging
 import typing
 
 import agent.utils.config
 
 
-@enum.unique
-class LoggingLevel(enum.Enum):
-  DEBUG = 'debug'
-  INFO = 'info'
-  WARNING = 'warning'
-  ERROR = 'error'
-  CRITICAL = 'critical'
-
-
-def get_ppe_logger(level: LoggingLevel = LoggingLevel.INFO) -> logging.Logger:
-  logging.basicConfig(
-      format=agent.utils.config.GENERAL_LOGGING_FORMAT,
-      level=level.value.upper(),
-      style='{',
-  )
+def get_ppe_logger(level: str) -> logging.Logger:
   ppe_logger = logging.getLogger(agent.utils.config.AGENT_LOGGER_NAME)
-  ppe_logger.setLevel(level.value.upper())
+  ppe_logger.setLevel(
+    level=logging._nameToLevel[level]  # pylint: disable=protected-access
+  )
   return ppe_logger
 
 
-def get_uvicorn_logger_config(level: LoggingLevel = LoggingLevel.INFO) -> dict[str, typing.Any]:
+def get_uvicorn_logger_config(level: str) -> dict[str, typing.Any]:
+  logging_level = logging._nameToLevel[level]  # pylint: disable=protected-access
   return {
     'version': 1,
     'formatters': {
@@ -47,12 +35,12 @@ def get_uvicorn_logger_config(level: LoggingLevel = LoggingLevel.INFO) -> dict[s
     'loggers': {
         'uvicorn.error': {
             'handlers': ['default'],
-            'level': level.value.upper(),
+            'level': logging_level,
             'propagate': False
         },
         'uvicorn.access': {
             'handlers': ['access'],
-            'level': level.value.upper(),
+            'level': logging_level,
             'propagate': False
         },
     },

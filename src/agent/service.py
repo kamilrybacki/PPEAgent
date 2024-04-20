@@ -2,8 +2,6 @@ import contextlib
 import dataclasses
 import logging
 import requests
-import signal
-import sys
 
 import fastapi
 
@@ -20,7 +18,7 @@ IMPLEMENTED_ROUTERS = [
 
 @dataclasses.dataclass
 class PPEAgentService:
-  credentials: dict[str, str]
+  config: dict[str, str]
   _credentials: agent.utils.config.PPECredentials = dataclasses.field(
       init=False,
       repr=False
@@ -33,17 +31,19 @@ class PPEAgentService:
       init=False,
       default_factory=requests.Session
   )
-  logger: logging.Logger = dataclasses.field(init=False,)
+  logger: logging.Logger = dataclasses.field(init=False)
 
   def __post_init__(self) -> None:
-    self.logger = agent.utils.logger.get_ppe_logger()
-    self._credentials = agent.utils.config.PPECredentials(**self.credentials)
+    self.logger = agent.utils.logger.get_ppe_logger(
+      level=self.config.pop('logging_level', 'info')
+    )
+    self._credentials = agent.utils.config.PPECredentials(
+      **self.config.pop('credentials')
+    )
 
     @contextlib.asynccontextmanager
     async def application_bootstrap(app: fastapi.FastAPI):
       self.login()
-      for signal_of_interest in (signal.SIGINT, signal.SIGTERM):
-        signal.signal(signal_of_interest, self.logout)
       for router in IMPLEMENTED_ROUTERS:
         app.include_router(router)
       yield
@@ -69,4 +69,3 @@ class PPEAgentService:
       self._energa_session.get(agent.utils.config.PPE_LOGOUT_URL)
       self.logger.info('Successfully logged out from Energa service')
       self._energa_session.close()
-      sys.exit(0)
