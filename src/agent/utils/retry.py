@@ -5,9 +5,9 @@ import agent.utils.config
 
 @contextlib.contextmanager
 def retry_procedure(
-  expected: list[type[Exception]] | None = None,
-  ignored: list[type[Exception]] | None = None,
-  max_retries: int = agent.utils.config.GENERAL_MAX_RETRIES
+    expected: list[type[Exception]] | None = None,
+    ignored: list[type[Exception]] | None = None,
+    max_retries: int = agent.utils.config.GENERAL_MAX_RETRIES
 ):
     expected = expected or [Exception]
     ignored = ignored or []

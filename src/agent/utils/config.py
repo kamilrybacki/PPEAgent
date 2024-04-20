@@ -24,22 +24,22 @@ PPE_DATA_CHARTS_BASE_URL = 'https://mojlicznik.energa-operator.pl/dp/resources/c
 
 @dataclasses.dataclass
 class PPECredentials:
-  email: str
-  password: str = dataclasses.field(repr=False)
+    email: str
+    password: str = dataclasses.field(repr=False)
 
-  __EMAIL_REGEX = r"^\S+@\S+\.\S+$"
+    __EMAIL_REGEX = r"^\S+@\S+\.\S+$"
 
-  def __post_init__(self) -> None:
-    self._validate_email()
-    self.password = self.password.strip()
+    def __post_init__(self) -> None:
+        self._validate_email()
+        self.password = self.password.strip()
 
-  def _validate_email(self) -> None:
-    self.email = self.email.strip()
-    if not re.match(self.__EMAIL_REGEX, self.email):
-      raise ValueError('Invalid email address')
+    def _validate_email(self) -> None:
+        self.email = self.email.strip()
+        if not re.match(self.__EMAIL_REGEX, self.email):
+            raise ValueError('Invalid email address')
 
-  def get_form_data(self) -> dict[str, typing.Any]:
-    return {
-        PPE_LOGIN_FORM_USERNAME_ID: str(self.email),
-        PPE_LOGIN_FORM_PASSWORD_ID: str(self.password)
-    } | PPE_LOGIN_FORM_ADDITIONAL_DATA
+    def get_form_data(self) -> dict[str, typing.Any]:
+        return {
+            PPE_LOGIN_FORM_USERNAME_ID: str(self.email),
+            PPE_LOGIN_FORM_PASSWORD_ID: str(self.password)
+        } | PPE_LOGIN_FORM_ADDITIONAL_DATA
