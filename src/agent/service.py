@@ -64,8 +64,9 @@ class PPEAgentService:
 
     def logout(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         self.logger.info('Logging out from Energa service')
+        # To ensure that the logout procedure is executed when Ctrl+C is being pressed continuously, we need to ignore KeyboardInterrupt
         with agent.utils.retry.retry_procedure(
-            ignored=[KeyboardInterrupt]  # To ensure that the logout procedure is executed when Ctrl+C is being pressed continuously
+            ignored=[KeyboardInterrupt]  # type: ignore
         ):
             self._energa_session.get(agent.utils.config.PPE_LOGOUT_URL)
             self.logger.info('Successfully logged out from Energa service')
