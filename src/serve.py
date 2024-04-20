@@ -79,6 +79,7 @@ def main():
         server.start()
     except KeyboardInterrupt:
         server_logger.info('Shutting down PPE service server')
+        ppe_agent.logout()
         server.stop()
 
 

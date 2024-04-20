@@ -35,9 +35,7 @@ class PPEAgentService:
     logger: logging.Logger = dataclasses.field(init=False)
 
     def __post_init__(self) -> None:
-        self.logger = agent.utils.logger.get_ppe_logger(
-            level=self.config.pop('logging_level', 'info')
-        )
+        self.logger = logging.getLogger(agent.utils.config.AGENT_LOGGER_NAME)
         self._credentials = agent.utils.config.PPECredentials(
             **self.config.pop('credentials')
         )

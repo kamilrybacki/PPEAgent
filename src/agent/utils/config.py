@@ -6,7 +6,7 @@ GENERAL_LOGGING_FORMAT = '{asctime} [{processName}] {levelname}: {message}'
 GENERAL_MAX_RETRIES = 3
 
 AGENT_ROOT_PATH = '/'
-AGENT_LOGGER_NAME = 'PPEAgent'
+AGENT_LOGGER_NAME = 'uvicorn.error'
 
 PPE_LOGIN_URL = 'https://mojlicznik.energa-operator.pl/dp/UserLogin.do'
 PPE_LOGOUT_URL = 'https://mojlicznik.energa-operator.pl/dp/UserLogout.do'

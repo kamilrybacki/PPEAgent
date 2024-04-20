@@ -4,14 +4,6 @@ import typing
 import agent.utils.config
 
 
-def get_ppe_logger(level: str) -> logging.Logger:
-    ppe_logger = logging.getLogger(agent.utils.config.AGENT_LOGGER_NAME)
-    ppe_logger.setLevel(
-        level=logging._nameToLevel[level]  # pylint: disable=protected-access
-    )
-    return ppe_logger
-
-
 def get_uvicorn_logger_config(level: str) -> dict[str, typing.Any]:
     logging_level = logging._nameToLevel[level]  # pylint: disable=protected-access
     return {
