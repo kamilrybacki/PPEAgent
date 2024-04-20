@@ -2,6 +2,7 @@ import contextlib
 import dataclasses
 import logging
 import requests
+import typing
 
 import fastapi
 
@@ -18,7 +19,7 @@ IMPLEMENTED_ROUTERS = [
 
 @dataclasses.dataclass
 class PPEAgentService:
-    config: dict[str, str]
+    config: dict[str, typing.Any]
     _credentials: agent.utils.config.PPECredentials = dataclasses.field(
         init=False,
         repr=False
