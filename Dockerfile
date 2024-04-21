@@ -6,10 +6,11 @@ COPY src/ /app/
 COPY requirements.txt /app/
 
 RUN \
-    pip install \
-        --no-cache-dir \
-        --requirement \
-            /app/requirements.txt
+    pip \
+        install \
+            --no-cache-dir \
+            --requirement \
+                /app/requirements.txt
 
 RUN \
     adduser \

@@ -1,7 +1,17 @@
 name: Check Python code style and typing
 on: [push, pull_request]
 jobs:
-  lint:
+  lint-markdown:
+    runs-on: markdownlint/markdownlint:0.13.0
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint with markdownlint
+        run: |
+          markdownlint \
+            --config \
+              ${{ github.workspace }}/.markdownlint.json \
+            ${{ github.workspace }}
+  lint-python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,3 +48,12 @@ jobs:
             --config-file \
               ${{ github.workspace }}/mypy.ini \
             ${{ steps.find.outputs.files }}
+  lint-dockerfile:
+    runs-on: hadolint/hadolint:2.12.0-debian
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint Dockerfile
+        run: |
+          hadolint \
+            --ignore DL3013 \
+            Dockerfile
