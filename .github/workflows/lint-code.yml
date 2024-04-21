@@ -1,5 +1,6 @@
 name: Check Python code style and typing
 on: [push, pull_request]
+concurrency: check-code-style
 jobs:
   lint-markdown:
     runs-on: ubuntu-latest
