@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
         image: markdownlint/markdownlint:0.13.0
-        volumes:
-          - ${{ github.workspace }}:${{ github.workspace }}
+        options: --user root
     steps:
       - uses: actions/checkout@v3
       - name: Lint with markdownlint
@@ -59,8 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
         image: hadolint/hadolint:2.12.0-debian
-        volumes:
-          - ${{ github.workspace }}:${{ github.workspace }}
+        options: --user root
     steps:
       - uses: actions/checkout@v3
       - name: Lint Dockerfile
