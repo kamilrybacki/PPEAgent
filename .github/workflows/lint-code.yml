@@ -1,10 +1,15 @@
 name: Check Python code style and typing
 on: [push, pull_request]
-concurrency: check-code-style
+concurrency: 
+    group: check-code-style
+    cancel-in-progress: true
 jobs:
   lint-markdown:
     runs-on: ubuntu-latest
-    container: markdownlint/markdownlint:0.13.0
+    container: 
+        image: markdownlint/markdownlint:0.13.0
+        volumes:
+          - ${{ github.workspace }}:${{ github.workspace }}
     steps:
       - uses: actions/checkout@v3
       - name: Lint with markdownlint
@@ -52,7 +57,10 @@ jobs:
             ${{ steps.find.outputs.files }}
   lint-dockerfile:
     runs-on: ubuntu-latest
-    container: hadolint/hadolint:2.12.0-debian
+    container:
+        image: hadolint/hadolint:2.12.0-debian
+        volumes:
+          - ${{ github.workspace }}:${{ github.workspace }}
     steps:
       - uses: actions/checkout@v3
       - name: Lint Dockerfile
