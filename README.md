@@ -77,13 +77,23 @@ To install the required dependencies **locally**, run:
 pip install -r requirements.txt
 ```
 
-Next, simply spawn app a Uvicorn ASGI server by running the `serve.py` script:
+Next, simply spawn an Uvicorn ASGI server by running the `serve.py` script:
 
 ```shell
 python serve.py
 ```
 
+This should result in a new Uvicorn process spawning in the terminal as so:
+
+<img src=".github/assets/images/ASGI.png" alt="Terminal logs of running agent"/>
+
+#### Docker image
+
+A more pro-Gamer move :joystick: is to deploy this application in a Docker container.
+This repository provides a [Dockerfile] that installs the required dependencies and sets up the application to run in a container.
+
 [FastAPI]: https://fastapi.tiangolo.com/
 [Uvicorn]: https://www.uvicorn.org/
 [*MójLicznik*]: https://mojlicznik.energa-operator.pl/
-[`retry` context manager]: ./src/agent/utils/retry.py
+[`retry_procedure` context manager]: https://github.com/kamilrybacki/PPEAgent/blob/main/src/agent/utils/retry.py
+[Dockerfile]: https://github.com/kamilrybacki/PPEAgent/blob/main/Dockerfile

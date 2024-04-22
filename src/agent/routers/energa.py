@@ -10,6 +10,7 @@ import fastapi.responses
 import requests
 
 import agent.utils.consts
+import agent.utils.retry
 
 MEASUREMENTS_ROUTER = fastapi.APIRouter()
 
@@ -81,11 +82,13 @@ async def query_measurements(request: fastapi.Request) -> fastapi.responses.Resp
         agent.utils.consts.AGENT_ENERGA_SESSION_FIELD
     )  # type: ignore
 
-    data_query_url = f'https://mojlicznik.energa-operator.pl/dp/resources/chart?mainChartDate={date_to_epoch(starting_date)}&type={period}&meterPoint={meter_id}&mo=A%2B'
-    response = authorized_energa_session.get(
-        url=data_query_url,
-        timeout=agent.utils.consts.DEFAULT_AGENT_TIMEOUT
-    )
+    with agent.utils.retry.retry_procedure():
+        data_query_url = f'https://mojlicznik.energa-operator.pl/dp/resources/chart?mainChartDate={date_to_epoch(starting_date)}&type={period}&meterPoint={meter_id}&mo=A%2B'
+        response = authorized_energa_session.get(
+            url=data_query_url,
+            timeout=agent.utils.consts.DEFAULT_AGENT_TIMEOUT
+        )
+        response.raise_for_status()
     if response.status_code != 200:
         return fastapi.responses.JSONResponse(
             content={'status': 'error', 'message': 'Failed to fetch data'},
