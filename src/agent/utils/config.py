@@ -2,30 +2,14 @@ import dataclasses
 import re
 import typing
 
-GENERAL_LOGGING_FORMAT = '{asctime} [{processName}] {levelname}: {message}'
-GENERAL_MAX_RETRIES = 3
-
-AGENT_ROOT_PATH = '/'
-AGENT_LOGGER_NAME = 'uvicorn.error'
-
-PPE_LOGIN_URL = 'https://mojlicznik.energa-operator.pl/dp/UserLogin.do'
-PPE_LOGOUT_URL = 'https://mojlicznik.energa-operator.pl/dp/UserLogout.do'
-
-PPE_LOGIN_FORM_USERNAME_ID = 'j_username'
-PPE_LOGIN_FORM_PASSWORD_ID = 'j_password'
-PPE_LOGIN_FORM_ADDITIONAL_DATA = {
-    'save': 'save',
-    'selectedForm': 1,
-    'loginNow': 'zaloguj się',
-    'clientOS': 'web'
-}
-PPE_DATA_CHARTS_BASE_URL = 'https://mojlicznik.energa-operator.pl/dp/resources/chart'
+import agent.utils.consts
 
 
 @dataclasses.dataclass
 class PPECredentials:
     email: str
     password: str = dataclasses.field(repr=False)
+    id: int | None = dataclasses.field(default=None)
 
     __EMAIL_REGEX = r"^\S+@\S+\.\S+$"
 
@@ -40,6 +24,6 @@ class PPECredentials:
 
     def get_form_data(self) -> dict[str, typing.Any]:
         return {
-            PPE_LOGIN_FORM_USERNAME_ID: str(self.email),
-            PPE_LOGIN_FORM_PASSWORD_ID: str(self.password)
-        } | PPE_LOGIN_FORM_ADDITIONAL_DATA
+            agent.utils.consts.PPE_LOGIN_FORM_USERNAME_ID: str(self.email),
+            agent.utils.consts.PPE_LOGIN_FORM_PASSWORD_ID: str(self.password)
+        } | agent.utils.consts.PPE_LOGIN_FORM_ADDITIONAL_DATA

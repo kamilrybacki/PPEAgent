@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PPE Agent</title>
+    </head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        main {
+            margin: 20px;
+        }
+        h1 {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 0;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-top: 10px;
+        }
+    </style>
+    <body>
+        <h1>Energa energy measurements API info</h1>
+        <main>
+            <p>
+                To obtain measurements, it is <b>required</b> to provide the following parameters:
+                <ul>
+                    <li>
+                        <b>date</b> - the target date for which you want to obtain measurements
+                    </li>
+                    <li>
+                        <b>period</b> - the magnitute of measurement period:
+                        <ul>
+                            <li>
+                                <b>day</b> - daily measurements
+                            </li>
+                            <li>
+                                <b>week</b> - weekly measurements
+                            </li>
+                            <li>
+                                <b>month</b> - monthly measurements
+                            </li>
+                            <li>
+                                <b>year</b> - yearly measurements
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                Optionally, you can provide the following parameters:
+                <ul>
+                    <li>
+                        <b>limit</b> - the maximum number of measurements to return, starting from the most recent one (<it>default: fetches all existing data</it>)
+                    </li>
+                    <li>
+                        <b>cost</b> - the cost of the energy unit (kWh) in a chosen currency - the API will return the cost of the energy consumed in the specified currency (<it>default: shows measurements in kWh</it>)
+                    </li>
+                </ul>
+            </p>
+        </main>
+    </body>

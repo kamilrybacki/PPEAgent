@@ -1,13 +1,13 @@
 import contextlib
 
-import agent.utils.config
+import agent.utils.consts
 
 
 @contextlib.contextmanager
 def retry_procedure(
     expected: list[type[Exception]] | None = None,
     ignored: list[type[Exception]] | None = None,
-    max_retries: int = agent.utils.config.GENERAL_MAX_RETRIES
+    max_retries: int = agent.utils.consts.DEFAULT_GENERAL_MAX_RETRIES
 ):
     expected = expected or [Exception]
     ignored = ignored or []

@@ -11,6 +11,7 @@ import uvicorn.logging
 
 import agent.service
 import agent.utils.logger
+import agent.utils.consts
 
 
 @dataclasses.dataclass
@@ -53,7 +54,7 @@ class ThreadedPPEServer:
 def main():
     logging_level = os.getenv('PPE_AGENT_LOG_LEVEL', 'info').upper()
     logging.basicConfig(
-        format=agent.utils.config.GENERAL_LOGGING_FORMAT,
+        format=agent.utils.consts.DEFAULT_GENERAL_LOGGING_FORMAT,
         level=logging_level,
         style='{',
     )

@@ -1,20 +1,20 @@
 import fastapi
 import fastapi.responses
 
+import agent.utils.consts
+
 GENERAL_ROUTER = fastapi.APIRouter()
 
 
 @GENERAL_ROUTER.get('/')
 async def get_root_path() -> fastapi.responses.Response:
     return fastapi.responses.HTMLResponse(
-        content='''
-            <html>
-                <head>
-                    <title>PPE Agent</title>
-                </head>
-                <body>
-                    <h1>Welcome to PPE Agent</h1>
-                </body>
-            </html>
-        '''
+        content=open(f'{agent.utils.consts.DEFAULT_GENERAL_ASSETS_PATH}/index.html', encoding='utf-8').read(),
+    )
+
+
+@GENERAL_ROUTER.get('/health')
+async def get_health_check() -> fastapi.responses.Response:
+    return fastapi.responses.JSONResponse(
+        content={'status': 'ok'},
     )

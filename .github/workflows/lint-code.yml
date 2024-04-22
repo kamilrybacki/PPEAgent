@@ -1,4 +1,4 @@
-name: Check Python code style and typing
+name: Check code style and typing
 on: [push, pull_request]
 concurrency: 
     group: check-code-style

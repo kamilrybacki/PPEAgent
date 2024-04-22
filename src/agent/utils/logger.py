@@ -1,7 +1,7 @@
 import logging
 import typing
 
-import agent.utils.config
+import agent.utils.consts
 
 
 def get_uvicorn_logger_config(level: str) -> dict[str, typing.Any]:
@@ -11,7 +11,7 @@ def get_uvicorn_logger_config(level: str) -> dict[str, typing.Any]:
         'formatters': {
             name: {
                 '()': f'uvicorn.logging.{name.title()}Formatter',
-                'format': agent.utils.config.GENERAL_LOGGING_FORMAT,
+                'format': agent.utils.consts.DEFAULT_GENERAL_LOGGING_FORMAT,
                 'style': '{',
                 'use_colors': True,
             }
