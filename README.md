@@ -1,5 +1,12 @@
 # PPEAgent
 
+<img
+    src='.github/assets/images/PPEAgent.svg'
+    alt='PPE agent logo'
+    width='200'
+    style='display: block; margin: 0 auto; border: none;'
+/>
+
 This is a Python implementation of a data scraping agent that serves a simple API
 to fetch energy consumption measurements from a single meter registered
 in the Energa Operator network.
@@ -140,7 +147,7 @@ docker \
 Note that You can omit the volume mount of the custom configuration file if you don't need it and leave the `PPE_AGENT_CONFIG` environment variable empty.
 
 **Hint**: If you want to test out passing the configuration file to the container, you can use the provided `example.cfg` file in the repository root directory.
-Be sure to run the Docker container from repository root path (there are some relative paths in the configuration file). 😉
+Be sure to run the Docker container from the repository root path (there are some relative paths in the configuration file). 😉
 
 [FastAPI]: https://fastapi.tiangolo.com/
 [Uvicorn]: https://www.uvicorn.org/
