@@ -144,7 +144,7 @@ docker \
             PPE_AGENT_PASSWORD="<YOUR PASSWORD FOR MOJLICZNIK>" \
         --env \
             PPE_AGENT_PORT=8000 \
-        kokosz/ppe-agent
+        kokosz/ppeagent
 ```
 
 Note that You can omit the volume mount of the custom configuration file if you don't need it and leave the `PPE_AGENT_CONFIG` environment variable empty.
