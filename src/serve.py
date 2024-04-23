@@ -62,7 +62,6 @@ def main():
     })
     server = ThreadedPPEServer({
         'app': ppe_agent._app,  # pylint: disable=protected-access
-        'host': 'localhost',
         'port': int(os.getenv('PPE_AGENT_PORT', '8000')),
         'log_config': ppe_agent._log_config  # pylint: disable=protected-access
     })
