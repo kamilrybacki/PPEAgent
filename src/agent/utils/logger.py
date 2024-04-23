@@ -1,17 +1,20 @@
 import logging
-import typing
+import logging.config
 
 import agent.utils.consts
 
 
-def get_uvicorn_logger_config(level: str) -> dict[str, typing.Any]:
-    logging_level = logging._nameToLevel[level]  # pylint: disable=protected-access
-    return {
+def initialize_loggers(
+    level: str = agent.utils.consts.DEFAULT_GENERAL_LOGGING_LEVEL,
+    formatting: str = agent.utils.consts.DEFAULT_GENERAL_LOGGING_FORMAT
+) -> logging.Logger:
+    logging_level = logging._nameToLevel[level.upper()]  # pylint: disable=protected-access
+    logging.config.dictConfig({
         'version': 1,
         'formatters': {
             name: {
                 '()': f'uvicorn.logging.{name.title()}Formatter',
-                'format': agent.utils.consts.DEFAULT_GENERAL_LOGGING_FORMAT,
+                'format': formatting,
                 'style': '{',
                 'use_colors': True,
             }
@@ -36,4 +39,5 @@ def get_uvicorn_logger_config(level: str) -> dict[str, typing.Any]:
                 'propagate': False
             },
         },
-    }
+    })
+    return logging.getLogger('uvicorn')

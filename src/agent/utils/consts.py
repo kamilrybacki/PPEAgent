@@ -2,6 +2,7 @@ import os
 
 # Configuration defaults
 
+DEFAULT_GENERAL_LOGGING_LEVEL = 'INFO'
 DEFAULT_GENERAL_LOGGING_FORMAT = '{asctime} [{processName}] {levelname}: {message}'
 DEFAULT_GENERAL_ASSETS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'assets')
 DEFAULT_GENERAL_MAX_RETRIES = 3
@@ -10,9 +11,10 @@ DEFAULT_AGENT_ROOT_PATH = '/'
 
 # Implementation details - non-configurable
 
-AGENT_LOGGER_NAME = 'uvicorn.error'
+AGENT_CONFIG_FIELD = 'config'
 AGENT_METER_ID_FIELD = 'meterId'
 AGENT_ENERGA_SESSION_FIELD = 'session'
+AGENT_ASSETS_PATH_FIELD = 'assetsPath'
 
 PPE_LOGIN_URL = 'https://mojlicznik.energa-operator.pl/dp/UserLogin.do'
 PPE_LOGOUT_URL = 'https://mojlicznik.energa-operator.pl/dp/UserLogout.do'

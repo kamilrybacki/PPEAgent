@@ -24,6 +24,11 @@ IMPLEMENTED_ROUTERS = [
 @dataclasses.dataclass
 class PPEAgentService:
     config: dict[str, typing.Any]
+    logger: logging.Logger = dataclasses.field(init=False)
+    _config: agent.utils.config.PPEAgentConfig = dataclasses.field(
+        init=False,
+        default_factory=agent.utils.config.PPEAgentConfig
+    )
     _credentials: agent.utils.config.PPECredentials = dataclasses.field(
         init=False,
         repr=False
@@ -36,12 +41,14 @@ class PPEAgentService:
         init=False,
         default_factory=requests.Session
     )
-    logger: logging.Logger = dataclasses.field(init=False)
 
     def __post_init__(self) -> None:
-        self.logger = logging.getLogger(agent.utils.consts.AGENT_LOGGER_NAME)
         self._credentials = agent.utils.config.PPECredentials(
             **self.config.pop('credentials')
+        )
+        self.logger = agent.utils.logger.initialize_loggers(
+            self._config.log_level,
+            self._config.logging_format
         )
 
         @contextlib.asynccontextmanager
@@ -53,12 +60,15 @@ class PPEAgentService:
             self.logout()
 
         self._app = fastapi.FastAPI(
-            lifespan=application_bootstrap
+            lifespan=application_bootstrap,
+            root_path=self._config.root_path,
         )
 
     def login(self) -> None:
         self.logger.info('Logging into Energa service')
-        with agent.utils.retry.retry_procedure():
+        with agent.utils.retry.retry_procedure(
+            max_retries=self._config.max_retries
+        ):
             current_page_content = self._energa_session.get(
                 agent.utils.consts.PPE_LOGIN_URL
             ).text
@@ -83,11 +93,14 @@ class PPEAgentService:
             self._app.extra[
                 agent.utils.consts.AGENT_ENERGA_SESSION_FIELD
             ] = self._energa_session
+            self._app.extra[
+                agent.utils.consts.AGENT_CONFIG_FIELD
+            ] = self._config
             self.logger.info('Successfully logged into Energa service')
 
     def get_meter_id(self) -> int:
         '''
-        Write a regex to fetch the meter ID from the basic_data_script, which is located under the following part of fetched HTML source:
+        UIses a regex to fetch the meter ID from the basic_data_script (scraped page source), which is located under the following part of fetched HTML content:
         <script type="text/javascript">
             meters.list.push({
                 id: 12345678,
@@ -99,21 +112,26 @@ class PPEAgentService:
         </script>
         The regex should return the ID of the meter, which is 12345678 in this case
         '''
-        basic_data_script = self._energa_session.get(
-            agent.utils.consts.PPE_DATA_SCRIPT_BASE_URL
-        ).text
-        basic_data_script_matches = re.search(
-            r'meters\.list\.push\({\s+id: (\d+),',
-            basic_data_script
-        )
-        if basic_data_script_matches is None:
-            raise ValueError('Could not fetch meter ID')
-        return int(basic_data_script_matches[1])
+        with agent.utils.retry.retry_procedure(
+            max_retries=self._config.max_retries
+        ):
+            basic_data_script_fetch_response = self._energa_session.get(
+                agent.utils.consts.PPE_DATA_SCRIPT_BASE_URL
+            )
+            basic_data_script_fetch_response.raise_for_status()
+            basic_data_script_matches = re.search(
+                r'meters\.list\.push\({\s+id: (\d+),',
+                basic_data_script_fetch_response.text
+            )
+            if basic_data_script_matches is None:
+                raise ValueError('Could not fetch meter ID')
+            return int(basic_data_script_matches[1])
 
     def logout(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         self.logger.info('Logging out from Energa service')
         # To ensure that the logout procedure is executed when Ctrl+C is being pressed continuously, we need to ignore KeyboardInterrupt
         with agent.utils.retry.retry_procedure(
+            max_retries=self._config.max_retries,
             ignored=[KeyboardInterrupt]  # type: ignore
         ):
             self._energa_session.get(agent.utils.consts.PPE_LOGOUT_URL)

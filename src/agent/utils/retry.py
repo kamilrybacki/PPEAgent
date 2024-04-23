@@ -1,13 +1,11 @@
 import contextlib
 
-import agent.utils.consts
-
 
 @contextlib.contextmanager
 def retry_procedure(
+    max_retries: int,
     expected: list[type[Exception]] | None = None,
     ignored: list[type[Exception]] | None = None,
-    max_retries: int = agent.utils.consts.DEFAULT_GENERAL_MAX_RETRIES
 ):
     """
     A context manager that allows for retrying a procedure in case of specified exceptions.

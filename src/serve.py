@@ -1,6 +1,5 @@
 import contextlib
 import dataclasses
-import logging
 import os
 import time
 import threading
@@ -52,34 +51,23 @@ class ThreadedPPEServer:
 
 
 def main():
-    logging_level = os.getenv('PPE_AGENT_LOG_LEVEL', 'info').upper()
-    logging.basicConfig(
-        format=agent.utils.consts.DEFAULT_GENERAL_LOGGING_FORMAT,
-        level=logging_level,
-        style='{',
-    )
     ppe_agent = agent.service.PPEAgentService({
         'credentials': {
             'email': os.getenv('PPE_AGENT_EMAIL'),
             'password': os.getenv('PPE_AGENT_PASSWORD')
-        },
-        'logging_level': logging_level
+        }
     })
     server = ThreadedPPEServer({
         'app': ppe_agent._app,  # pylint: disable=protected-access
         'host': 'localhost',
-        'port': 8000,
-        'log_config': agent.utils.logger.get_uvicorn_logger_config(
-            level=logging_level
-        )
+        'port': os.getenv('PPE_AGENT_PORT', '8000')
     })
 
-    server_logger = logging.getLogger('uvicorn')
     try:
-        server_logger.info('Starting PPE service server')
+        ppe_agent.logger.info('Starting PPE service server')
         server.start()
     except KeyboardInterrupt:
-        server_logger.info('Shutting down PPE service server')
+        ppe_agent.logger.info('Shutting down PPE service server')
         ppe_agent.logout()
         server.stop()
 

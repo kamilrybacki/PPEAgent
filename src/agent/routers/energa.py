@@ -52,9 +52,12 @@ def date_to_epoch(date: str) -> int:
 
 
 @MEASUREMENTS_ROUTER.get('/energy/info')
-async def get_measurements_api_info() -> fastapi.responses.Response:
+async def get_measurements_api_info(request: fastapi.Request) -> fastapi.responses.Response:
+    assets_path: str = request.app.extra.get(
+        agent.utils.consts.AGENT_CONFIG_FIELD
+    ).assets_path
     return fastapi.responses.HTMLResponse(
-        content=open(f'{agent.utils.consts.DEFAULT_GENERAL_ASSETS_PATH}/energy_info.html', encoding='utf-8').read(),
+        content=open(f'{assets_path}/energy_info.html', encoding='utf-8').read(),
     )
 
 
@@ -82,11 +85,17 @@ async def query_measurements(request: fastapi.Request) -> fastapi.responses.Resp
         agent.utils.consts.AGENT_ENERGA_SESSION_FIELD
     )  # type: ignore
 
-    with agent.utils.retry.retry_procedure():
-        data_query_url = f'https://mojlicznik.energa-operator.pl/dp/resources/chart?mainChartDate={date_to_epoch(starting_date)}&type={period}&meterPoint={meter_id}&mo=A%2B'
+    with agent.utils.retry.retry_procedure(
+        max_retries=current_agent_app_state.extra.get(
+            agent.utils.consts.AGENT_CONFIG_FIELD,
+        ).max_retries  # type: ignore
+    ):
+        data_query_url = f'{agent.utils.consts.PPE_DATA_CHARTS_BASE_URL}?mainChartDate={date_to_epoch(starting_date)}&type={period}&meterPoint={meter_id}&mo=A%2B'
         response = authorized_energa_session.get(
             url=data_query_url,
-            timeout=agent.utils.consts.DEFAULT_AGENT_TIMEOUT
+            timeout=current_agent_app_state.extra.get(
+                agent.utils.consts.AGENT_CONFIG_FIELD
+            ).timeout  # type: ignore
         )
         response.raise_for_status()
     if response.status_code != 200:

@@ -39,6 +39,7 @@ The API is implemented using the [FastAPI] framework and served using [Uvicorn].
 * `charset-normalizer==3.3.2`
 * `requests==2.31.0`
 * `urllib3==2.2.1`
+* `configparser==7.0.0`
 
 ## Usage
 
@@ -46,14 +47,23 @@ There are a couple of settings that need to be configured before running the app
 
 ### Configuration
 
-Below is a list of **environment variables** that need to be set to run the application:
+Below is a list of **environment variables** that control the main settings of the application run:
+
+#### Required
 
 * `PPE_AGENT_EMAIL` - Your Energa [*MójLicznik*] account email
 * `PPE_AGENT_PASSWORD` - Your Energa [*MójLicznik*] account password
 
+#### Optional
+
+* `PPE_AGENT_PORT` - Port on which the application will listen for incoming requests (default: 8000)
+* `PPE_AGENT_CONFIG` - path to the configuration file (default: `''` i.e. reads hardcoded defaults)
+
 **Note**: These are the only required environment variables and are obtained by registering an account on the [*MójLicznik*] website - **not** anywhere from Your contract with Energa Operator.
 
-The rest of the configuration is optional and can be set in the `config.yaml` file pointed to by the `PPE_AGENT_CONFIG` environment variable:
+#### Extra configuration
+
+The rest of the configuration is optional and can be set in the *.cfg* file pointed to by the `PPE_AGENT_CONFIG` environment variable:
 
 * `GENERAL_LOGGING_FORMAT` - format of log entries reported by Uvicorn (default: `'{asctime} [{processName}] {levelname}: {message}'`)
 * `GENERAL_ASSETS_PATH` - path to the directory where the application will store its static assets (default: '`'assets'`' in the repository source code directory)
@@ -77,7 +87,7 @@ To install the required dependencies **locally**, run:
 pip install -r requirements.txt
 ```
 
-Next, simply spawn an Uvicorn ASGI server by running the `serve.py` script:
+Next, simply spawn a Uvicorn ASGI server by running the `serve.py` script:
 
 ```shell
 python serve.py
@@ -95,9 +105,42 @@ This repository provides a [Dockerfile] that installs the required dependencies 
 
 To build the Docker image, run the following command in the repository root directory:
 
-```shell
-docker build -t <IMAGE NAME> .
+```bash
+docker build -t "<IMAGE NAME>" .
 ```
+
+**But** there is an even more sophisticated approach - the official image is available on Docker Hub, so you can pull it directly from there:
+
+```bash
+docker pull kokosz/ppe-agent
+```
+
+After building the image or pulling it from Docker Hub, you can run the container by executing the following command:
+
+```bash
+docker \
+    run \
+        -d \
+        -p 8000:8000 \  # set by PPE_AGENT_PORT
+        --volume \
+            "<PATH TO YOUR CONFIG FILE>:/app/config.cfg" \
+        --env \
+            PPE_AGENT_CONFIG="/app/config.cfg" \
+        --env \
+            PPE_AGENT_EMAIL="<YOUR EMAIL FOR MOJLICZNIK>" \
+        --env \
+            PPE_AGENT_PASSWORD="<YOUR PASSWORD FOR MOJLICZNIK>" \
+        --env \
+            PPE_AGENT_PORT=8000 \  # or any other port you want to expose
+        --name \
+            my-ppe-agent-instance \
+        kokosz/ppe-agent
+```
+
+Note that You can omit the volume mount of the custom configuration file if you don't need it and leave the `PPE_AGENT_CONFIG` environment variable empty.
+
+**Hint**: If you want to test out passing the configuration file to the container, you can use the provided `example.cfg` file in the repository root directory.
+Be sure to run the Docker container from repository root path (there are some relative paths in the configuration file). 😉
 
 [FastAPI]: https://fastapi.tiangolo.com/
 [Uvicorn]: https://www.uvicorn.org/
