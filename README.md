@@ -90,7 +90,14 @@ This should result in a new Uvicorn process spawning in the terminal as so:
 #### Docker image
 
 A more pro-Gamer move :joystick: is to deploy this application in a Docker container.
+
 This repository provides a [Dockerfile] that installs the required dependencies and sets up the application to run in a container.
+
+To build the Docker image, run the following command in the repository root directory:
+
+```shell
+docker build -t <IMAGE NAME> .
+```
 
 [FastAPI]: https://fastapi.tiangolo.com/
 [Uvicorn]: https://www.uvicorn.org/
