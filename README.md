@@ -126,7 +126,7 @@ docker build -t "<IMAGE NAME>" .
 **But** there is an even more sophisticated approach - the official image is available on Docker Hub, so you can pull it directly from there:
 
 ```bash
-docker pull kokosz/ppe-agent
+docker pull kokosz/ppeagent
 ```
 
 After building the image or pulling it from Docker Hub, you can run the container by executing the following command:
