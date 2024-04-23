@@ -4,7 +4,7 @@
     src='.github/assets/images/PPEAgent.svg'
     alt='PPE agent logo'
     width='200'
-    style='display: block; margin: 0 auto; border: none;'
+    style='display: block; margin: 0 auto;'
 />
 
 This is a Python implementation of a data scraping agent that serves a simple API
