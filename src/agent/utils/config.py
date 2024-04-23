@@ -62,7 +62,6 @@ class PPEAgentConfig:
         if 'AGENT' not in config:
             raise ValueError('Config file must contain an [AGENT] section')
         self.logging_format = config['AGENT'].get('logging_format', self.logging_format)
-        print(self.logging_format)
         self.assets_path = config['AGENT'].get('assets_path', self.assets_path)
         self.max_retries = config['AGENT'].getint('max_retries', self.max_retries)
         self.timeout = config['AGENT'].getint('timeout', self.timeout)
