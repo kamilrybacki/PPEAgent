@@ -3,6 +3,7 @@ import dataclasses
 import logging
 import re
 import typing
+import sys
 
 import fastapi
 import requests
@@ -29,6 +30,10 @@ class PPEAgentService:
         init=False,
         default_factory=agent.utils.config.PPEAgentConfig
     )
+    _log_config: dict[str, typing.Any] = dataclasses.field(
+        init=False,
+        default_factory=dict
+    )
     _credentials: agent.utils.config.PPECredentials = dataclasses.field(
         init=False,
         repr=False
@@ -46,10 +51,11 @@ class PPEAgentService:
         self._credentials = agent.utils.config.PPECredentials(
             **self.config.pop('credentials')
         )
-        self.logger = agent.utils.logger.initialize_loggers(
+        self._log_config = agent.utils.logger.initialize_loggers(
             self._config.log_level,
             self._config.logging_format
         )
+        self.logger = logging.getLogger('uvicorn')
 
         @contextlib.asynccontextmanager
         async def application_bootstrap(app: fastapi.FastAPI):
@@ -137,3 +143,4 @@ class PPEAgentService:
             self._energa_session.get(agent.utils.consts.PPE_LOGOUT_URL)
             self.logger.info('Successfully logged out from Energa service')
             self._energa_session.close()
+            sys.exit(0)

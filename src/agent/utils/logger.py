@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import typing
 
 import agent.utils.consts
 
@@ -7,9 +8,9 @@ import agent.utils.consts
 def initialize_loggers(
     level: str = agent.utils.consts.DEFAULT_GENERAL_LOGGING_LEVEL,
     formatting: str = agent.utils.consts.DEFAULT_GENERAL_LOGGING_FORMAT
-) -> logging.Logger:
+) -> dict[str, typing.Any]:
     logging_level = logging._nameToLevel[level.upper()]  # pylint: disable=protected-access
-    logging.config.dictConfig({
+    current_config: dict[str, typing.Any] = {
         'version': 1,
         'formatters': {
             name: {
@@ -28,6 +29,11 @@ def initialize_loggers(
             for name in ['default', 'access']
         },
         'loggers': {
+            'uvicorn': {
+                'handlers': ['default'],
+                'level': logging_level,
+                'propagate': False
+            },
             'uvicorn.error': {
                 'handlers': ['default'],
                 'level': logging_level,
@@ -39,5 +45,6 @@ def initialize_loggers(
                 'propagate': False
             },
         },
-    })
-    return logging.getLogger('uvicorn')
+    }
+    logging.config.dictConfig(current_config)
+    return current_config

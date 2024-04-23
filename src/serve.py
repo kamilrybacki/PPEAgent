@@ -1,6 +1,7 @@
 import contextlib
 import dataclasses
 import os
+import sys
 import time
 import threading
 import typing
@@ -37,6 +38,8 @@ class ThreadedPPEServer:
             while not self.server.started:
                 time.sleep(0.1)
             yield
+        except KeyboardInterrupt:
+            sys.exit(1)
         finally:
             self.should_exit = True
             self.thread.join()
@@ -44,7 +47,7 @@ class ThreadedPPEServer:
     def start(self):
         with self.run_in_thread():
             while not self.should_exit:
-                time.sleep(0.1)
+                time.sleep(0.001)
 
     def stop(self):
         self.should_exit = True
@@ -60,12 +63,12 @@ def main():
     server = ThreadedPPEServer({
         'app': ppe_agent._app,  # pylint: disable=protected-access
         'host': 'localhost',
-        'port': os.getenv('PPE_AGENT_PORT', '8000')
+        'port': int(os.getenv('PPE_AGENT_PORT', '8000')),
+        'log_config': ppe_agent._log_config  # pylint: disable=protected-access
     })
-
     try:
-        ppe_agent.logger.info('Starting PPE service server')
         server.start()
+        ppe_agent.logger.info('Started PPE service server')
     except KeyboardInterrupt:
         ppe_agent.logger.info('Shutting down PPE service server')
         ppe_agent.logout()
