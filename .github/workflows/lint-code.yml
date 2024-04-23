@@ -8,13 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install markdownlint-cli
+      - 
+        name: Install markdownlint-cli
         run: |
           npm \
             install \
               -g \
               markdownlint-cli
-      - name: Lint with markdownlint
+      - 
+        name: Lint with markdownlint
         run: |
           markdownlint \
             --config \
@@ -24,34 +26,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.12
+      - 
+        name: Set up Python 3.12
         uses: actions/setup-python@v3
         with:
           python-version: 3.12
-      - name: Install dependencies
+      - 
+        name: Install dependencies
         run: |
           pip \
             install \
               -r requirements.txt \
               -r tests/requirements.txt \
               -r .github/assets/requirements.txt
-      - name: Find Python files
+      -
+        name: Find Python files
         id: find
         run: |
           echo "::set-output name=files::$(find . -name '*.py' -not -path './.venv/*' -not -path './.github/*' -not -path './tests/*')"
-      - name: Lint with flake8
+      -
+        name: Lint with flake8
         run: |
           flake8 \
             --config \
               ${{ github.workspace }}/.flake8 \
             ${{ steps.find.outputs.files }}
-      - name: Lint with pylint
+      -
+        name: Lint with pylint
         run: |
           pylint \
             --rcfile \
               ${{ github.workspace }}/.pylintrc \
             ${{ steps.find.outputs.files }}
-      - name: Type check with mypy
+      -
+        name: Type check with mypy
         run: |
           mypy \
             --config-file \
@@ -61,14 +69,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Dockerfilelint
+      -
+        name: Install Dockerfilelint
         run: |
             npm \
                 install \
                 -g \
                 dockerfilelint
-      - name: Lint with Dockerfilelint
+      -
+        name: Lint with Dockerfilelint
         run: |
             dockerfilelint \
                 ${{ github.workspace }}/Dockerfile
-
