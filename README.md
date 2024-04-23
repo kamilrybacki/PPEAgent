@@ -69,6 +69,7 @@ Below is a list of **environment variables** that control the main settings of t
 
 #### Optional
 
+* `PPE_AGENT_HOST` - Hostname on which the application will listen for incoming requests (default: `'127.0.0.1'` on local deployments, `'0.0.0.0'` in Docker containers)
 * `PPE_AGENT_PORT` - Port on which the application will listen for incoming requests (default: 8000)
 * `PPE_AGENT_CONFIG` - path to the configuration file (default: `''` i.e. reads hardcoded defaults)
 

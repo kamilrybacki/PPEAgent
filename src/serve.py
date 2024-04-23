@@ -63,6 +63,7 @@ def main():
     server = ThreadedPPEServer({
         'app': ppe_agent._app,  # pylint: disable=protected-access
         'port': int(os.getenv('PPE_AGENT_PORT', '8000')),
+        'host': '0.0.0.0' if os.getenv('PPE_AGENT_IS_DOCKERIZED') else os.getenv('PPE_AGENT_HOST', '127.0.0.1'),
         'log_config': ppe_agent._log_config  # pylint: disable=protected-access
     })
     try:

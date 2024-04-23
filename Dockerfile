@@ -30,4 +30,6 @@ WORKDIR /app
 
 USER ppeagent
 
+ENV PPE_AGENT_IS_DOCKERIZED=1
+
 CMD ["python", "serve.py"]
