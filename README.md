@@ -7,6 +7,13 @@
     style='display: block; margin: 0 auto;'
 />
 
+![GitHub last commit](https://img.shields.io/github/last-commit/kamilrybacki/PPEAgent)
+![GitHub issues](https://img.shields.io/github/issues/kamilrybacki/PPEAgent)
+![Linting](https://github.com/kamilrybacki/PPEAgent/actions/workflows/lint-code.yml/badge.svg)
+![Docker pulls](https://img.shields.io/docker/pulls/kokosz/ppeagent.svg)
+![Docker image size](https://img.shields.io/docker/image-size/kokosz/ppeagent/latest)
+
+
 This is a Python implementation of a data scraping agent that serves a simple API
 to fetch energy consumption measurements from a single meter registered
 in the Energa Operator network.
@@ -127,8 +134,7 @@ After building the image or pulling it from Docker Hub, you can run the containe
 ```bash
 docker \
     run \
-        -d \
-        -p 8000:8000 \  # set by PPE_AGENT_PORT
+        -p 8000:8000 \ 
         --volume \
             "<PATH TO YOUR CONFIG FILE>:/app/config.cfg" \
         --env \
@@ -138,9 +144,7 @@ docker \
         --env \
             PPE_AGENT_PASSWORD="<YOUR PASSWORD FOR MOJLICZNIK>" \
         --env \
-            PPE_AGENT_PORT=8000 \  # or any other port you want to expose
-        --name \
-            my-ppe-agent-instance \
+            PPE_AGENT_PORT=8000 \
         kokosz/ppe-agent
 ```
 

@@ -5,7 +5,8 @@
         "nobr",
         "sup",
         "img",
-        "sub"
+        "sub",
+        "br",
     ]
   },
   "MD013": { "line_length": 192 }
