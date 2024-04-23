@@ -13,7 +13,6 @@
 ![Docker pulls](https://img.shields.io/docker/pulls/kokosz/ppeagent.svg)
 ![Docker image size](https://img.shields.io/docker/image-size/kokosz/ppeagent/latest)
 
-
 This is a Python implementation of a data scraping agent that serves a simple API
 to fetch energy consumption measurements from a single meter registered
 in the Energa Operator network.
