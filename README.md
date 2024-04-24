@@ -21,38 +21,38 @@ The main goals of this project are:
 
 1. Provide an isolated service that acts as a simple middleware between the
    Energa Operator API and some other application that needs to consume
-   and post-process the data.
-2. Slightly simplify the data structure returned by the Energa Operator API.
-3. Return JSON data that is easier to consume by other applications.
+   and post-process the data,
+2. Slightly simplify the data structure returned by the Energa Operator API,
+3. Return JSON data that is easier to consume by other applications,
 4. Require as little configuration as possible to run the service.
 
 The API is implemented using the [FastAPI] framework and served using [Uvicorn].
 
 ## Requirements
 
-* Python 3.12+
-* `fastapi==0.110.2`
-* `annotated-types==0.6.0`
-* `anyio==4.3.0`
-* `idna==3.7`
-* `pydantic==2.7.0`
-* `pydantic-core==2.18.1`
-* `sniffio==1.3.1`
-* `starlette==0.37.2`
-* `click==8.1.7`
-* `h11==0.14.0`
-* `httptools==0.6.1`
-* `python-dotenv==1.0.1`
-* `pyyaml==6.0.1`
-* `uvicorn==0.29.0`
-* `uvloop==0.19.0`
-* `watchfiles==0.21.0`
-* `websockets==12.0`
-* `certifi==2024.2.2`
-* `charset-normalizer==3.3.2`
-* `requests==2.31.0`
-* `urllib3==2.2.1`
-* `configparser==7.0.0`
+* Python 3.12+,
+* `fastapi==0.110.2`,
+* `annotated-types==0.6.0`,
+* `anyio==4.3.0`,
+* `idna==3.7`,
+* `pydantic==2.7.0`,
+* `pydantic-core==2.18.1`,
+* `sniffio==1.3.1`,
+* `starlette==0.37.2`,
+* `click==8.1.7`,
+* `h11==0.14.0`,
+* `httptools==0.6.1`,
+* `python-dotenv==1.0.1`,
+* `pyyaml==6.0.1`,
+* `uvicorn==0.29.0`,
+* `uvloop==0.19.0`,
+* `watchfiles==0.21.0`,
+* `websockets==12.0`,
+* `certifi==2024.2.2`,
+* `charset-normalizer==3.3.2`,
+* `requests==2.31.0`,
+* `urllib3==2.2.1`,
+* `configparser==7.0.0`.
 
 ## Usage
 
@@ -64,14 +64,14 @@ Below is a list of **environment variables** that control the main settings of t
 
 #### Required
 
-* `PPE_AGENT_EMAIL` - Your Energa [*MójLicznik*] account email
-* `PPE_AGENT_PASSWORD` - Your Energa [*MójLicznik*] account password
+* `PPE_AGENT_EMAIL` - Your Energa [*MójLicznik*] account email,
+* `PPE_AGENT_PASSWORD` - Your Energa [*MójLicznik*] account password.
 
 #### Optional
 
-* `PPE_AGENT_HOST` - Hostname on which the application will listen for incoming requests (default: `'127.0.0.1'` on local deployments, `'0.0.0.0'` in Docker containers)
-* `PPE_AGENT_PORT` - Port on which the application will listen for incoming requests (default: 8000)
-* `PPE_AGENT_CONFIG` - path to the configuration file (default: `''` i.e. reads hardcoded defaults)
+* `PPE_AGENT_HOST` - Hostname on which the application will listen for incoming requests (default: `'127.0.0.1'` on local deployments, `'0.0.0.0'` in Docker containers),
+* `PPE_AGENT_PORT` - Port on which the application will listen for incoming requests (default: 8000),
+* `PPE_AGENT_CONFIG` - path to the configuration file (default: `''` i.e. reads hardcoded defaults).
 
 **Note**: These are the only required environment variables and are obtained by registering an account on the [*MójLicznik*] website - **not** anywhere from Your contract with Energa Operator.
 
@@ -79,11 +79,11 @@ Below is a list of **environment variables** that control the main settings of t
 
 The rest of the configuration is optional and can be set in the *.cfg* file pointed to by the `PPE_AGENT_CONFIG` environment variable:
 
-* `GENERAL_LOGGING_FORMAT` - format of log entries reported by Uvicorn (default: `'{asctime} [{processName}] {levelname}: {message}'`)
-* `GENERAL_ASSETS_PATH` - path to the directory where the application will store its static assets (default: '`'assets'`' in the repository source code directory)
-* `GENERAL_MAX_RETRIES` - maximum number of retries for certain operations (external requests, I/O operations etc. see the [`retry_procedure` context manager]) (default: 3)
-* `AGENT_TIMEOUT` - default timeout in seconds for requests to the Energa Operator API (default: 10)
-* `AGENT_ROOT_PATH` - root path of the API served by the application (default: `'/'`)
+* `GENERAL_LOGGING_FORMAT` - format of log entries reported by Uvicorn (default: `'{asctime} [{processName}] {levelname}: {message}'`),
+* `GENERAL_ASSETS_PATH` - path to the directory where the application will store its static assets (default: '`'assets'`' in the repository source code directory),
+* `GENERAL_MAX_RETRIES` - maximum number of retries for certain operations (external requests, I/O operations etc. see the [`retry_procedure` context manager]) (default: 3),
+* `AGENT_TIMEOUT` - default timeout in seconds for requests to the Energa Operator API (default: 10),
+* `AGENT_ROOT_PATH` - root path of the API served by the application (default: `'/'`).
 
 ### Running the application
 
@@ -152,6 +152,25 @@ Note that You can omit the volume mount of the custom configuration file if you 
 
 **Hint**: If you want to test out passing the configuration file to the container, you can use the provided `example.cfg` file in the repository root directory.
 Be sure to run the Docker container from the repository root path (there are some relative paths in the configuration file). 😉
+
+### Endpoints
+
+The application exposes right now a small set of API endpoints for fetching data from PPEAgent. All of the subpaths presented below are relative to Your deployment root path (`AGENT_ROOT_PATH`):
+
+* (GET) `/` - returns a micro HTML welcome page,
+* (GET) `/energy/info` - provides Basi information about querying energy consumption data,
+* (GET) `/energy/query` - main endpoints for fetching data from Your meter. This endpoints uses the following query parameters:
+  * `date` - the target date for which you want to obtain measurements (in `[DAY]-[MONTH]-[YEAR]` format,
+  * `period` - the magnitute of measurement period (accepted values: `day`, `week`, `month` or `year`). 
+
+Optionally, you can provide the following parameters:
+                
+* `limit` - the maximum number of measurements to return, starting from the most recent one (default: fetches all existing data), 
+* `cost` - the cost of the energy unit (kWh) in a chosen currency - the API will return the cost of the energy consumed in the specified currency (default: shows measurements in kWh).
+
+The data is returned according to aggregation rules defined in *MojLicznik* application i.e. based on which period the requested date lies in.
+
+For example, if Your date lies in the 14th week of the year and chosen period type is weekly (`?period=week`) the data for the WHOLE 14th WEEK is RETURNED (or at least it looks like so 🤷)
 
 [FastAPI]: https://fastapi.tiangolo.com/
 [Uvicorn]: https://www.uvicorn.org/
