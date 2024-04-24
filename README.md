@@ -161,11 +161,11 @@ The application exposes right now a small set of API endpoints for fetching data
 * (GET) `/energy/info` - provides Basi information about querying energy consumption data,
 * (GET) `/energy/query` - main endpoints for fetching data from Your meter. This endpoints uses the following query parameters:
   * `date` - the target date for which you want to obtain measurements (in `[DAY]-[MONTH]-[YEAR]` format,
-  * `period` - the magnitute of measurement period (accepted values: `day`, `week`, `month` or `year`). 
+  * `period` - the magnitute of measurement period (accepted values: `day`, `week`, `month` or `year`).
 
 Optionally, you can provide the following parameters:
-                
-* `limit` - the maximum number of measurements to return, starting from the most recent one (default: fetches all existing data), 
+
+* `limit` - the maximum number of measurements to return, starting from the most recent one (default: fetches all existing data),
 * `cost` - the cost of the energy unit (kWh) in a chosen currency - the API will return the cost of the energy consumed in the specified currency (default: shows measurements in kWh).
 
 The data is returned according to aggregation rules defined in *MojLicznik* application i.e. based on which period the requested date lies in.
